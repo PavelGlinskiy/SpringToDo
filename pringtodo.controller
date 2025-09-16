@@ -1,0 +1,125 @@
+[1mdiff --git a/src/main/java/com/emobile/springtodo/config/TodoApi.java b/src/main/java/com/emobile/springtodo/config/TodoApi.java[m
+[1mindex aea512c..dc4f9ae 100644[m
+[1m--- a/src/main/java/com/emobile/springtodo/config/TodoApi.java[m
+[1m+++ b/src/main/java/com/emobile/springtodo/config/TodoApi.java[m
+[36m@@ -1,7 +1,7 @@[m
+ package com.emobile.springtodo.config;[m
+ [m
+[31m-import com.emobile.springtodo.DTO.TodoDTO;[m
+[31m-import com.emobile.springtodo.DTO.TodoRequestDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoRequestDTO;[m
+ import io.swagger.v3.oas.annotations.Operation;[m
+ import io.swagger.v3.oas.annotations.Parameter;[m
+ import io.swagger.v3.oas.annotations.tags.Tag;[m
+[1mdiff --git a/src/main/java/com/emobile/springtodo/controller/TodoController.java b/src/main/java/com/emobile/springtodo/controller/TodoController.java[m
+[1mindex 9ee5dd2..4616ee8 100644[m
+[1m--- a/src/main/java/com/emobile/springtodo/controller/TodoController.java[m
+[1m+++ b/src/main/java/com/emobile/springtodo/controller/TodoController.java[m
+[36m@@ -1,7 +1,7 @@[m
+ package com.emobile.springtodo.controller;[m
+ [m
+[31m-import com.emobile.springtodo.DTO.TodoDTO;[m
+[31m-import com.emobile.springtodo.DTO.TodoRequestDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoRequestDTO;[m
+ import com.emobile.springtodo.config.TodoApi;[m
+ import com.emobile.springtodo.service.TodoService;[m
+ import lombok.RequiredArgsConstructor;[m
+[1mdiff --git a/src/main/java/com/emobile/springtodo/dto/TodoDTO.java b/src/main/java/com/emobile/springtodo/dto/TodoDTO.java[m
+[1mindex 4a416b7..8b082c2 100644[m
+[1m--- a/src/main/java/com/emobile/springtodo/dto/TodoDTO.java[m
+[1m+++ b/src/main/java/com/emobile/springtodo/dto/TodoDTO.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.emobile.springtodo.DTO;[m
+[32m+[m[32mpackage com.emobile.springtodo.dto;[m
+ [m
+ import io.swagger.v3.oas.annotations.media.Schema;[m
+ import lombok.AllArgsConstructor;[m
+[1mdiff --git a/src/main/java/com/emobile/springtodo/dto/TodoRequestDTO.java b/src/main/java/com/emobile/springtodo/dto/TodoRequestDTO.java[m
+[1mindex 5a37d8c..34cce48 100644[m
+[1m--- a/src/main/java/com/emobile/springtodo/dto/TodoRequestDTO.java[m
+[1m+++ b/src/main/java/com/emobile/springtodo/dto/TodoRequestDTO.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.emobile.springtodo.DTO;[m
+[32m+[m[32mpackage com.emobile.springtodo.dto;[m
+ [m
+ import io.swagger.v3.oas.annotations.media.Schema;[m
+ import jakarta.validation.constraints.NotBlank;[m
+[1mdiff --git a/src/main/java/com/emobile/springtodo/mapper/TodoMapper.java b/src/main/java/com/emobile/springtodo/mapper/TodoMapper.java[m
+[1mindex b9747e5..af67662 100644[m
+[1m--- a/src/main/java/com/emobile/springtodo/mapper/TodoMapper.java[m
+[1m+++ b/src/main/java/com/emobile/springtodo/mapper/TodoMapper.java[m
+[36m@@ -1,11 +1,8 @@[m
+ package com.emobile.springtodo.mapper;[m
+ [m
+[31m-import com.emobile.springtodo.DTO.TodoDTO;[m
+[31m-import com.emobile.springtodo.DTO.TodoRequestDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoRequestDTO;[m
+ import com.emobile.springtodo.entity.Todo;[m
+[31m-import org.mapstruct.Mapper;[m
+[31m-import org.mapstruct.MappingTarget;[m
+[31m-import org.mapstruct.factory.Mappers;[m
+ import org.springframework.stereotype.Component;[m
+ [m
+ import java.util.List;[m
+[1mdiff --git a/src/main/java/com/emobile/springtodo/service/TodoService.java b/src/main/java/com/emobile/springtodo/service/TodoService.java[m
+[1mindex 00dc2d4..4fe5799 100644[m
+[1m--- a/src/main/java/com/emobile/springtodo/service/TodoService.java[m
+[1m+++ b/src/main/java/com/emobile/springtodo/service/TodoService.java[m
+[36m@@ -1,7 +1,7 @@[m
+ package com.emobile.springtodo.service;[m
+ [m
+[31m-import com.emobile.springtodo.DTO.TodoDTO;[m
+[31m-import com.emobile.springtodo.DTO.TodoRequestDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoRequestDTO;[m
+ import com.emobile.springtodo.entity.Todo;[m
+ import com.emobile.springtodo.exception.TodoNotFoundException;[m
+ import com.emobile.springtodo.mapper.TodoMapper;[m
+[1mdiff --git a/src/main/resources/db/changelog/01-create-tables.xml b/src/main/resources/db/changelog/01-create-tables.xml[m
+[1mindex d5c0bbb..3b5d173 100644[m
+[1m--- a/src/main/resources/db/changelog/01-create-tables.xml[m
+[1m+++ b/src/main/resources/db/changelog/01-create-tables.xml[m
+[36m@@ -6,6 +6,13 @@[m
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">[m
+ [m
+     <changeSet id="1" author="Pavel Glinskiy">[m
+[32m+[m[32m        <preConditions onFail="MARK_RAN">[m
+[32m+[m[32m            <dbms type="postgresql"/>[m
+[32m+[m[32m            <not>[m
+[32m+[m[32m                <tableExists tableName="todo"/>[m
+[32m+[m[32m            </not>[m
+[32m+[m[32m        </preConditions>[m
+[32m+[m
+         <createTable tableName="todo">[m
+             <column name="id" type="BIGSERIAL">[m
+                 <constraints primaryKey="true" nullable="false"/>[m
+[1mdiff --git a/src/test/java/com/emobile/springtodo/controller/TodoControllerIT.java b/src/test/java/com/emobile/springtodo/controller/TodoControllerIT.java[m
+[1mindex e6f359e..e8e9b0b 100644[m
+[1m--- a/src/test/java/com/emobile/springtodo/controller/TodoControllerIT.java[m
+[1m+++ b/src/test/java/com/emobile/springtodo/controller/TodoControllerIT.java[m
+[36m@@ -1,7 +1,7 @@[m
+ package com.emobile.springtodo.controller;[m
+ [m
+ import com.emobile.springtodo.BasePostgresTest;[m
+[31m-import com.emobile.springtodo.DTO.TodoRequestDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoRequestDTO;[m
+ import com.fasterxml.jackson.databind.ObjectMapper;[m
+ import org.junit.jupiter.api.DisplayName;[m
+ import org.junit.jupiter.api.Test;[m
+[1mdiff --git a/src/test/java/com/emobile/springtodo/service/TodoServiceTest.java b/src/test/java/com/emobile/springtodo/service/TodoServiceTest.java[m
+[1mindex 58ce0bc..05a1c17 100644[m
+[1m--- a/src/test/java/com/emobile/springtodo/service/TodoServiceTest.java[m
+[1m+++ b/src/test/java/com/emobile/springtodo/service/TodoServiceTest.java[m
+[36m@@ -1,7 +1,7 @@[m
+ package com.emobile.springtodo.service;[m
+ [m
+[31m-import com.emobile.springtodo.DTO.TodoDTO;[m
+[31m-import com.emobile.springtodo.DTO.TodoRequestDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoDTO;[m
+[32m+[m[32mimport com.emobile.springtodo.dto.TodoRequestDTO;[m
+ import com.emobile.springtodo.entity.Todo;[m
+ import com.emobile.springtodo.exception.TodoNotFoundException;[m
+ import com.emobile.springtodo.mapper.TodoMapper;[m

@@ -1,7 +1,7 @@
 package com.emobile.springtodo.service;
 
-import com.emobile.springtodo.DTO.TodoDTO;
-import com.emobile.springtodo.DTO.TodoRequestDTO;
+import com.emobile.springtodo.dto.TodoDTO;
+import com.emobile.springtodo.dto.TodoRequestDTO;
 import com.emobile.springtodo.entity.Todo;
 import com.emobile.springtodo.exception.TodoNotFoundException;
 import com.emobile.springtodo.mapper.TodoMapper;

@@ -1,7 +1,7 @@
 package com.emobile.springtodo.controller;
 
-import com.emobile.springtodo.DTO.TodoDTO;
-import com.emobile.springtodo.DTO.TodoRequestDTO;
+import com.emobile.springtodo.dto.TodoDTO;
+import com.emobile.springtodo.dto.TodoRequestDTO;
 import com.emobile.springtodo.config.TodoApi;
 import com.emobile.springtodo.service.TodoService;
 import lombok.RequiredArgsConstructor;

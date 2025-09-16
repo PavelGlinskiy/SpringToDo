@@ -1,11 +1,8 @@
 package com.emobile.springtodo.mapper;
 
-import com.emobile.springtodo.DTO.TodoDTO;
-import com.emobile.springtodo.DTO.TodoRequestDTO;
+import com.emobile.springtodo.dto.TodoDTO;
+import com.emobile.springtodo.dto.TodoRequestDTO;
 import com.emobile.springtodo.entity.Todo;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

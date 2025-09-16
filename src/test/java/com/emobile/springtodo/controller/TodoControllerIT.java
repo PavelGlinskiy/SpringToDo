@@ -1,7 +1,7 @@
 package com.emobile.springtodo.controller;
 
 import com.emobile.springtodo.BasePostgresTest;
-import com.emobile.springtodo.DTO.TodoRequestDTO;
+import com.emobile.springtodo.dto.TodoRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

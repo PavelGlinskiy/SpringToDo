@@ -1,7 +1,7 @@
 package com.emobile.springtodo.config;
 
-import com.emobile.springtodo.DTO.TodoDTO;
-import com.emobile.springtodo.DTO.TodoRequestDTO;
+import com.emobile.springtodo.dto.TodoDTO;
+import com.emobile.springtodo.dto.TodoRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
