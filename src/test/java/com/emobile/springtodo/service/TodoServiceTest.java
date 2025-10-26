@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,13 +66,15 @@ class TodoServiceTest {
     @DisplayName("create сохраняет и возвращает DTO")
     void create_savesAndReturnsDto() {
         TodoRequestDTO req = new TodoRequestDTO("New", false);
-        Todo saved = new Todo(10L, "New", false);
-        given(repository.save(any(Todo.class))).willReturn(saved);
-
+        doAnswer(invocation -> {
+            Todo arg = invocation.getArgument(0);
+            arg.setId(10L);
+            return null;
+        }).when(repository).save(any(Todo.class));
         TodoDTO dto = service.create(req);
-
         assertThat(dto.getId()).isEqualTo(10L);
         assertThat(dto.getTitle()).isEqualTo("New");
+        verify(repository).save(any(Todo.class));
     }
 
     @Test
@@ -79,23 +82,31 @@ class TodoServiceTest {
     void update_updatesExisting() {
         Todo existing = new Todo(5L, "Old", false);
         given(repository.findById(5L)).willReturn(Optional.of(existing));
-        given(repository.update(eq(5L), any(Todo.class))).willReturn(1);
 
         TodoRequestDTO req = new TodoRequestDTO("Up", true);
         TodoDTO updated = service.update(5L, req);
 
         assertThat(updated.getTitle()).isEqualTo("Up");
         assertThat(updated.isCompleted()).isTrue();
-        verify(repository).update(eq(5L), any(Todo.class));
+        verify(repository).update(existing);
     }
 
     @Test
     @DisplayName("delete бросает исключение если запись не найдена")
     void delete_notFound_throws() {
-        given(repository.delete(77L)).willReturn(0);
+        given(repository.findById(77L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.delete(77L))
                 .isInstanceOf(TodoNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("delete удаляет существующую запись")
+    void delete_removesExisting() {
+        Todo existing = new Todo(5L, "Task", false);
+        given(repository.findById(5L)).willReturn(Optional.of(existing));
+        service.delete(5L);
+        verify(repository).delete(existing);
     }
 }
 

@@ -11,11 +11,13 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TodoService {
     private final TodoRepository repository;
     private final TodoMapper mapper;
@@ -39,14 +41,13 @@ public class TodoService {
     })
     public TodoDTO create(TodoRequestDTO dto) {
         Todo entity = mapper.toEntity(dto);
-        Todo saved = repository.save(entity);
-        return mapper.toDTO(saved);
+        repository.save(entity);
+        return mapper.toDTO(entity);
     }
-
 
     @Cacheable(value = "todosCompleted")
     public List<TodoDTO> findCompleted() {
-        return mapper.toDTOs(repository.findCompleted());
+        return mapper.toDTOs(repository.findCompleted(true));
     }
 
     @Cacheable(value = "todosPending")
@@ -69,7 +70,7 @@ public class TodoService {
         Todo todo = repository.findById(id)
                 .orElseThrow(() -> new TodoNotFoundException(id));
         mapper.updateEntityFromDTO(dto, todo);
-        repository.update(id, todo);
+        repository.update(todo);
         return mapper.toDTO(todo);
     }
 
@@ -80,9 +81,8 @@ public class TodoService {
             @CacheEvict(value = "todosPending", allEntries = true)
     })
     public void delete(Long id) {
-        int rows = repository.delete(id);
-        if (rows == 0) {
-            throw new TodoNotFoundException(id);
-        }
+        Todo todo = repository.findById(id)
+                .orElseThrow(() -> new TodoNotFoundException(id));
+        repository.delete(todo);
     }
 }

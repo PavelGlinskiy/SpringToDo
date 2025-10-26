@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -43,18 +41,23 @@ class TodoRepositoryIT extends BasePostgresTest {
     @DisplayName("save создаёт запись и заполняет id")
     @Sql({"classpath:db/testdata/clear.sql"})
     void save_creates() {
-        Todo saved = repository.save(new Todo("New", false));
-        assertThat(saved.getId()).isNotNull();
-        assertThat(repository.findAll()).hasSize(1);
+        Todo newTodo = new Todo("New Task", false);
+        repository.save(newTodo);
+        assertThat(newTodo.getId()).isNotNull();
+        List<Todo> todos = repository.findAll();
+        assertThat(todos).hasSize(1)
+                .extracting(Todo::getTitle)
+                .contains("New Task");
     }
 
     @Test
     @DisplayName("update изменяет поля записи")
     @Sql({"classpath:db/testdata/clear.sql", "classpath:db/testdata/todos.sql"})
     void update_updates() {
-        Todo toUpdate = new Todo(100L, "Updated", true);
-        int rows = repository.update(100L, toUpdate);
-        assertThat(rows).isEqualTo(1);
+        Todo existing = repository.findById(100L).orElseThrow();
+        existing.setTitle("Updated");
+        existing.setCompleted(true);
+        repository.update(existing);
         Todo updated = repository.findById(100L).orElseThrow();
         assertThat(updated.getTitle()).isEqualTo("Updated");
         assertThat(updated.isCompleted()).isTrue();
@@ -64,7 +67,7 @@ class TodoRepositoryIT extends BasePostgresTest {
     @DisplayName("findCompleted возвращает только выполненные")
     @Sql({"classpath:db/testdata/clear.sql", "classpath:db/testdata/todos.sql"})
     void findCompleted_onlyCompleted() {
-        List<Todo> completed = repository.findCompleted();
+        List<Todo> completed = repository.findCompleted(true);
         assertThat(completed).extracting(Todo::isCompleted).containsOnly(true);
     }
 
@@ -80,8 +83,8 @@ class TodoRepositoryIT extends BasePostgresTest {
     @DisplayName("delete удаляет запись по id")
     @Sql({"classpath:db/testdata/clear.sql", "classpath:db/testdata/todos.sql"})
     void delete_removes() {
-        int rows = repository.delete(100L);
-        assertThat(rows).isEqualTo(1);
+        Todo todo = repository.findById(100L).orElseThrow();
+        repository.delete(todo);
         assertThat(repository.findById(100L)).isEmpty();
     }
 }
