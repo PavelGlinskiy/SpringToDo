@@ -15,8 +15,7 @@ public class TodoMetrics {
 
     @PostConstruct
     public void initMetrics() {
-        meterRegistry.gauge("completed_todos", repository, TodoRepository::countCompleted);
-        meterRegistry.gauge("pending_todos", repository, TodoRepository::countPending);
-
+        meterRegistry.gauge("completed_todos", repository, TodoRepository::countByCompletedTrue);
+        meterRegistry.gauge("pending_todos", repository, TodoRepository::countByCompletedFalse);
     }
 }

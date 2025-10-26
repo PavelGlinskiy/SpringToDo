@@ -20,7 +20,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
@@ -88,7 +87,7 @@ class TodoServiceTest {
 
         assertThat(updated.getTitle()).isEqualTo("Up");
         assertThat(updated.isCompleted()).isTrue();
-        verify(repository).update(existing);
+        verify(repository).save(existing);
     }
 
     @Test
@@ -106,7 +105,7 @@ class TodoServiceTest {
         Todo existing = new Todo(5L, "Task", false);
         given(repository.findById(5L)).willReturn(Optional.of(existing));
         service.delete(5L);
-        verify(repository).delete(existing);
+        verify(repository).deleteById(5L);
     }
 }
 

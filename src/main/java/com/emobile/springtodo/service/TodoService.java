@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,17 +48,17 @@ public class TodoService {
 
     @Cacheable(value = "todosCompleted")
     public List<TodoDTO> findCompleted() {
-        return mapper.toDTOs(repository.findCompleted(true));
+        return mapper.toDTOs(repository.findByCompleted(true));
     }
 
     @Cacheable(value = "todosPending")
     public List<TodoDTO> findPending() {
-        return mapper.toDTOs(repository.findPending());
+        return mapper.toDTOs(repository.findByCompleted(false));
     }
 
     @Cacheable(value = "todosPaginated", key = "#limit + '-' + #offset")
     public List<TodoDTO> findPagination(int limit, int offset) {
-        return mapper.toDTOs(repository.findPaginated(limit, offset));
+        return mapper.toDTOs(repository.findAll(PageRequest.of(offset/limit, limit)).getContent());
     }
 
     @Caching(evict = {
@@ -70,7 +71,7 @@ public class TodoService {
         Todo todo = repository.findById(id)
                 .orElseThrow(() -> new TodoNotFoundException(id));
         mapper.updateEntityFromDTO(dto, todo);
-        repository.update(todo);
+        repository.save(todo);
         return mapper.toDTO(todo);
     }
 
@@ -81,8 +82,8 @@ public class TodoService {
             @CacheEvict(value = "todosPending", allEntries = true)
     })
     public void delete(Long id) {
-        Todo todo = repository.findById(id)
+        repository.findById(id)
                 .orElseThrow(() -> new TodoNotFoundException(id));
-        repository.delete(todo);
+        repository.deleteById(id);
     }
 }

@@ -57,7 +57,7 @@ class TodoRepositoryIT extends BasePostgresTest {
         Todo existing = repository.findById(100L).orElseThrow();
         existing.setTitle("Updated");
         existing.setCompleted(true);
-        repository.update(existing);
+        repository.save(existing);
         Todo updated = repository.findById(100L).orElseThrow();
         assertThat(updated.getTitle()).isEqualTo("Updated");
         assertThat(updated.isCompleted()).isTrue();
@@ -67,7 +67,7 @@ class TodoRepositoryIT extends BasePostgresTest {
     @DisplayName("findCompleted возвращает только выполненные")
     @Sql({"classpath:db/testdata/clear.sql", "classpath:db/testdata/todos.sql"})
     void findCompleted_onlyCompleted() {
-        List<Todo> completed = repository.findCompleted(true);
+        List<Todo> completed = repository.findByCompleted(true);
         assertThat(completed).extracting(Todo::isCompleted).containsOnly(true);
     }
 
@@ -75,7 +75,7 @@ class TodoRepositoryIT extends BasePostgresTest {
     @DisplayName("findPending возвращает только невыполненные")
     @Sql({"classpath:db/testdata/clear.sql", "classpath:db/testdata/todos.sql"})
     void findPending_onlyPending() {
-        List<Todo> pending = repository.findPending();
+        List<Todo> pending = repository.findByCompleted(false);
         assertThat(pending).extracting(Todo::isCompleted).containsOnly(false);
     }
 
