@@ -22,7 +22,8 @@ pipeline {
 
         stage('Docker Build') {
             when {
-                branch 'main'
+                branch 'dev'
+                beforeAgent true
             }
             steps {
                 bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
@@ -31,7 +32,8 @@ pipeline {
 
         stage('Docker Login & Push') {
             when {
-                branch 'main'
+                branch 'dev'
+                beforeAgent true
             }
             steps {
                 withCredentials([
