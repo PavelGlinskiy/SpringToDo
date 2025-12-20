@@ -23,12 +23,8 @@ pipeline {
         stage('Docker Build') {
             when {
                 expression {
-                    def branchName = bat(
-                        script: 'git rev-parse --abbrev-ref HEAD',
-                        returnStdout: true
-                    ).trim()
-                    echo "Current branch: ${branchName}"
-                    return branchName.contains('main')
+                    def branch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                    return branch == 'main'
                 }
             }
             steps {
@@ -39,11 +35,8 @@ pipeline {
         stage('Docker Login & Push') {
             when {
                 expression {
-                    def branchName = bat(
-                        script: 'git rev-parse --abbrev-ref HEAD',
-                        returnStdout: true
-                    ).trim()
-                    return branchName.contains('main')
+                    def branch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                    return branch == 'main'
                 }
             }
             steps {
