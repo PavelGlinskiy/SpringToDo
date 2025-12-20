@@ -2,18 +2,21 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "pavelglinskiy/springtodo"
-        IMAGE_TAG  = "latest"
+        IMAGE_NAME = 'pavelglinskiy/springtodo'
+        IMAGE_TAG = 'latest'
     }
 
     stages {
-
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Get Branch') {
+            steps {
                 script {
-                    // Получаем текущую ветку через Jenkins переменную
-                    currentBranch = env.GIT_BRANCH?.replaceAll(/^origin\//, '') ?: 'unknown'
+                    currentBranch = env.GIT_BRANCH ?: 'main'
                     echo "Current branch: ${currentBranch}"
                 }
             }
@@ -26,34 +29,24 @@ pipeline {
         }
 
         stage('Docker Build') {
-            when {
-                expression {
-                    return currentBranch == 'main'
-                }
-            }
             steps {
-                bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
+                bat "docker build -t %IMAGE_NAME%:%IMAGE_TAG% ."
             }
         }
 
         stage('Docker Login & Push') {
             when {
-                expression {
-                    return currentBranch == 'main'
-                }
+                expression { return currentBranch == 'main' }
             }
             steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'docker-hub-credentials',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
-                    bat '''
-                    docker login -u %DOCKER_USER% -p %DOCKER_PASS%
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS')]) {
+                    bat """
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
                     docker push %IMAGE_NAME%:%IMAGE_TAG%
-                    '''
+                    """
                 }
             }
         }
