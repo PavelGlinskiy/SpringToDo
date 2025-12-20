@@ -11,6 +11,11 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                script {
+                    // Получаем текущую ветку через Jenkins переменную
+                    currentBranch = env.GIT_BRANCH?.replaceAll(/^origin\//, '') ?: 'unknown'
+                    echo "Current branch: ${currentBranch}"
+                }
             }
         }
 
@@ -23,8 +28,7 @@ pipeline {
         stage('Docker Build') {
             when {
                 expression {
-                    def branch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-                    return branch == 'main'
+                    return currentBranch == 'main'
                 }
             }
             steps {
@@ -35,8 +39,7 @@ pipeline {
         stage('Docker Login & Push') {
             when {
                 expression {
-                    def branch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-                    return branch == 'main'
+                    return currentBranch == 'main'
                 }
             }
             steps {
