@@ -15,36 +15,21 @@ pipeline {
         }
 
         stage('Build & Test (Maven)') {
+            when { branch 'dev' }
             steps {
                 bat 'mvn clean install'
             }
         }
 
         stage('Docker Build') {
-            when {
-                expression {
-                    def branch = bat(
-                        script: 'git rev-parse --abbrev-ref HEAD',
-                        returnStdout: true
-                    ).trim()
-                    return branch == 'main'
-                }
-            }
+            when { branch 'main' }
             steps {
                 bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
             }
         }
 
         stage('Docker Login & Push') {
-            when {
-                expression {
-                    def branch = bat(
-                        script: 'git rev-parse --abbrev-ref HEAD',
-                        returnStdout: true
-                    ).trim()
-                    return branch == 'main'
-                }
-            }
+            when { branch 'main' }
             steps {
                 withCredentials([
                     usernamePassword(
@@ -71,3 +56,4 @@ pipeline {
         }
     }
 }
+// Test v1
