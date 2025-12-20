@@ -15,10 +15,9 @@ pipeline {
         }
 
         stage('Build & Test (Maven)') {
-            when { branch 'dev' }
             steps {
-                bat 'mvn clean install'
-            }
+                    bat 'mvn clean install'
+                }
         }
 
         stage('Docker Build') {
