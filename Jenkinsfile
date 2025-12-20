@@ -14,7 +14,7 @@ pipeline {
             }
         }
 
-        stage('Build (Maven)') {
+        stage('Build & Test (Maven)') {
             steps {
                 bat 'mvn clean install'
             }
@@ -22,7 +22,13 @@ pipeline {
 
         stage('Docker Build') {
             when {
-                branch 'main'
+                expression {
+                    def branch = bat(
+                        script: 'git rev-parse --abbrev-ref HEAD',
+                        returnStdout: true
+                    ).trim()
+                    return branch == 'main'
+                }
             }
             steps {
                 bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
@@ -31,7 +37,13 @@ pipeline {
 
         stage('Docker Login & Push') {
             when {
-                branch 'main'
+                expression {
+                    def branch = bat(
+                        script: 'git rev-parse --abbrev-ref HEAD',
+                        returnStdout: true
+                    ).trim()
+                    return branch == 'main'
+                }
             }
             steps {
                 withCredentials([
@@ -52,10 +64,10 @@ pipeline {
 
     post {
         success {
-            echo 'Build SUCCESS'
+            echo 'Pipeline SUCCESS'
         }
         failure {
-            echo 'Build FAILED'
+            echo 'Pipeline FAILED'
         }
     }
 }
