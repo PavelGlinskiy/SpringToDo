@@ -16,7 +16,7 @@ pipeline {
         stage('Get Branch') {
             steps {
                 script {
-                    currentBranch = env.GIT_BRANCH ?: 'main'
+                    currentBranch = (env.GIT_BRANCH ?: 'main').replace('origin/', '')
                     echo "Current branch: ${currentBranch}"
                 }
             }
