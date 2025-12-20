@@ -21,14 +21,31 @@ pipeline {
         }
 
         stage('Docker Build') {
-            when { branch 'main' }
+            when {
+                expression {
+                    def branchName = bat(
+                        script: 'git rev-parse --abbrev-ref HEAD',
+                        returnStdout: true
+                    ).trim()
+                    echo "Current branch: ${branchName}"
+                    return branchName.contains('main')
+                }
+            }
             steps {
                 bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
             }
         }
 
         stage('Docker Login & Push') {
-            when { branch 'main' }
+            when {
+                expression {
+                    def branchName = bat(
+                        script: 'git rev-parse --abbrev-ref HEAD',
+                        returnStdout: true
+                    ).trim()
+                    return branchName.contains('main')
+                }
+            }
             steps {
                 withCredentials([
                     usernamePassword(
@@ -55,4 +72,3 @@ pipeline {
         }
     }
 }
-//Test push 
