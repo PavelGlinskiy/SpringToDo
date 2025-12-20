@@ -15,7 +15,6 @@ pipeline {
         }
 
         stage('Build & Test (Maven)') {
-            when { branch 'dev' }
             steps {
                 bat 'mvn clean install'
             }
