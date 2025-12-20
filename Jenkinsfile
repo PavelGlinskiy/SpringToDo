@@ -22,17 +22,22 @@ pipeline {
 
         stage('Docker Build') {
             when {
-                expression { env.BRANCH_NAME == 'main' }
+                expression {
+                    def branch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                    return branch == 'main'
+                }
             }
             steps {
-                echo "Building Docker image for branch ${env.BRANCH_NAME}"
                 bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
             }
         }
 
         stage('Docker Login & Push') {
             when {
-                expression { env.BRANCH_NAME == 'main' }
+                expression {
+                    def branch = bat(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                    return branch == 'main'
+                }
             }
             steps {
                 withCredentials([
@@ -53,10 +58,10 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline SUCCESS for branch ${env.BRANCH_NAME}"
+            echo 'Pipeline SUCCESS'
         }
         failure {
-            echo "Pipeline FAILED for branch ${env.BRANCH_NAME}"
+            echo 'Pipeline FAILED'
         }
     }
 }
